@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from word_utils import load_word_template, replace_placeholders, save_word_document  # Funktionen aus word_utils.py importieren
-from email_utils import create_email, set_recipient, set_subject, set_body, add_attachment, send_email  # Platzhalter für E-Mail-Bibliothek
+from email_utils import send_email
 
 # Funktion zum Laden der Excel-Datei mit Mitarbeiterdaten
 def lade_excel_datei(dateipfad):
@@ -35,17 +35,17 @@ def erstelle_word_dokument(mitarbeiter, vorlage_pfad, speicher_pfad):
     except Exception as e:
         print(f"Fehler beim Erstellen des Dokuments für {mitarbeiter['Name']}: {e}")
 
-# Funktion zum Senden einer E-Mail mit angehängten Dokumenten
+# Funktion zum Senden einer E-Mail mit den generierten Dokumenten
 def sende_email_mit_anhang(vorgesetzter_email, dokumenten_liste):
     try:
-        email = create_email()
-        set_recipient(email, vorgesetzter_email)  # Setzt den Empfänger
-        set_subject(email, "Leistungsbeurteilungen Ihrer Mitarbeitenden")  # Setzt den Betreff
-        set_body(email, "Anbei finden Sie die Beurteilungsbögen Ihrer Mitarbeitenden.")  # Fügt den Nachrichtentext hinzu
-        for dokument in dokumenten_liste:
-            add_attachment(email, dokument)  # Hängt die Dokumente an
-        send_email(email)  # Sendet die E-Mail
-        print(f"E-Mail an {vorgesetzter_email} gesendet.")
+        send_email(
+            recipient=vorgesetzter_email,
+            subject="Leistungsbeurteilungen Ihrer Mitarbeitenden",
+            body="Anbei finden Sie die Beurteilungsbögen Ihrer Mitarbeitenden.",
+            sender_email="your-email@example.com",  # Anpassung erforderlich
+            sender_password="your-password",       # Sicher aufbewahren!
+            attachments=dokumenten_liste
+        )
     except Exception as e:
         print(f"Fehler beim Senden der E-Mail an {vorgesetzter_email}: {e}")
 
